@@ -28,7 +28,7 @@ runs:
     - name: Configure TFLint
       run: |
         if [ "${{ inputs.cloud_provider }}" = "aws" ]; then
-          printf 'plugin "aws" {\n  enabled = true\n}\n' > .tflint.hcl
+                    printf 'plugin "aws" {\n  enabled = true\n  version = "0.32.0"\n  source  = "github.com/terraform-linters/tflint-ruleset-aws"\n}\n' > .tflint.hcl
           printf 'rule "aws_instance_invalid_type" {\n  enabled = true\n}\n' >> .tflint.hcl
         elif [ "${{ inputs.cloud_provider }}" = "azure" ]; then
           printf 'plugin "azurerm" {\n  enabled = true\n}\n' > .tflint.hcl
