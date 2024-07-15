@@ -23,6 +23,7 @@ runs:
     - name: Install TFLint
       run: |
         curl -s https://raw.githubusercontent.com/terraform-linters/tflint/master/install_linux.sh | bash
+      shell: bash
 
     - name: Configure TFLint
       run: |
@@ -35,9 +36,10 @@ runs:
         else
           echo "Unsupported cloud provider: ${{ inputs.cloud_provider }}"
           exit 1
-        fi
+      shell: bash
 
     - name: Run TFLint
       run: |
         tflint --init
         tflint
+      shell: bash
