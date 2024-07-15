@@ -36,6 +36,7 @@ runs:
         else
           echo "Unsupported cloud provider: ${{ inputs.cloud_provider }}"
           exit 1
+        fi
       shell: bash
 
     - name: Run TFLint
