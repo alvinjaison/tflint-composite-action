@@ -1,0 +1,43 @@
+name: 'TFLint Composite Action'
+description: 'Run TFLint with the specified Terraform version and cloud provider'
+inputs:
+  terraform_version:
+    description: 'The Terraform version to use'
+    required: true
+    default: '1.9.1'
+  cloud_provider:
+    description: 'The cloud provider to use for TFLint (aws or azure)'
+    required: true
+    default: 'aws'
+runs:
+  using: 'composite'
+  steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Set up Terraform
+      uses: hashicorp/setup-terraform@v2
+      with:
+        terraform_version: ${{ inputs.terraform_version }}
+
+    - name: Install TFLint
+      run: |
+        curl -s https://raw.githubusercontent.com/terraform-linters/tflint/master/install_linux.sh | bash
+
+    - name: Configure TFLint
+      run: |
+        if [ "${{ inputs.cloud_provider }}" = "aws" ]; then
+          echo 'plugin "aws" {\n  enabled = true\n}' > .tflint.hcl
+          echo 'rule "aws_instance_invalid_type" {\n  enabled = true\n}' >> .tflint.hcl
+        elif [ "${{ inputs.cloud_provider }}" = "azure" ]; then
+          echo 'plugin "azurerm" {\n  enabled = true\n}' > .tflint.hcl
+          echo 'rule "azurerm_storage_account" {\n  enabled = true\n}' >> .tflint.hcl
+        else
+          echo "Unsupported cloud provider: ${{ inputs.cloud_provider }}"
+          exit 1
+        fi
+
+    - name: Run TFLint
+      run: |
+        tflint --init
+        tflint
