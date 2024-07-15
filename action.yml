@@ -28,15 +28,16 @@ runs:
     - name: Configure TFLint
       run: |
         if [ "${{ inputs.cloud_provider }}" = "aws" ]; then
-          echo 'plugin "aws" {\n  enabled = true\n}' > .tflint.hcl
-          echo 'rule "aws_instance_invalid_type" {\n  enabled = true\n}' >> .tflint.hcl
+          printf 'plugin "aws" {\n  enabled = true\n}\n' > .tflint.hcl
+          printf 'rule "aws_instance_invalid_type" {\n  enabled = true\n}\n' >> .tflint.hcl
         elif [ "${{ inputs.cloud_provider }}" = "azure" ]; then
-          echo 'plugin "azurerm" {\n  enabled = true\n}' > .tflint.hcl
-          echo 'rule "azurerm_storage_account" {\n  enabled = true\n}' >> .tflint.hcl
+          printf 'plugin "azurerm" {\n  enabled = true\n}\n' > .tflint.hcl
+          printf 'rule "azurerm_storage_account" {\n  enabled = true\n}\n' >> .tflint.hcl
         else
           echo "Unsupported cloud provider: ${{ inputs.cloud_provider }}"
           exit 1
         fi
+        cat .tflint.hcl
 
         cat .tflint.hcl
       shell: bash
